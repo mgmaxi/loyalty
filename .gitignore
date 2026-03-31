@@ -75,7 +75,7 @@ Thumbs.db
 .DS_Store
 
 # Documentation & Project Files (Claude Code)
-CLAUDE.md
+# CLAUDE.md - Kept in repo for documentation
 DESIGN_ITERATION_SUMMARY.md
 FILES_MODIFIED.txt
 NEXT_STEPS.md
