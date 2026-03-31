@@ -1,0 +1,360 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --macro-blue: #0038FF;
+  --macro-blue-light: #4A8CFF;
+  --macro-pink: #EC4899;
+  --macro-dark: #1A1A2E;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #F9FAFB;
+  color: #1A1A2E;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide scrollbars for carousels */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #0038FF;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0030d1;
+}
+
+/* ===== ANIMATIONS ===== */
+
+/* Fade and scale animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Subtle pulse for loading states */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Bounce for attention-grabbing */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Shimmer effect for skeletons */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Gradient shift */
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Progress bar fill animation */
+@keyframes progressFill {
+  0% {
+    width: 0%;
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Glow effect for highlights */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 56, 255, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(0, 56, 255, 0);
+  }
+}
+
+/* Float animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Scale pulse */
+@keyframes scalePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Number counter animation */
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation utility classes */
+.animate-fadeIn {
+  animation: fadeIn 0.3s cubic-bezier(0.23, 1, 0.320, 1) forwards;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.4s cubic-bezier(0.23, 1, 0.320, 1) forwards;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.4s cubic-bezier(0.23, 1, 0.320, 1) forwards;
+}
+
+.animate-slideInFromLeft {
+  animation: slideInFromLeft 0.4s cubic-bezier(0.23, 1, 0.320, 1) forwards;
+}
+
+.animate-slideInFromRight {
+  animation: slideInFromRight 0.4s cubic-bezier(0.23, 1, 0.320, 1) forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+  background-size: 1000px 100%;
+}
+
+.animate-gradientShift {
+  animation: gradientShift 4s ease infinite;
+  background-size: 200% 200%;
+}
+
+/* Stagger animation delays */
+.animate-stagger-1 {
+  animation-delay: 0.1s;
+}
+.animate-stagger-2 {
+  animation-delay: 0.2s;
+}
+.animate-stagger-3 {
+  animation-delay: 0.3s;
+}
+.animate-stagger-4 {
+  animation-delay: 0.4s;
+}
+
+/* New animation utility classes */
+.animate-progressFill {
+  animation: progressFill 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-glow {
+  animation: glow 2s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-scalePulse {
+  animation: scalePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-countUp {
+  animation: countUp 0.6s cubic-bezier(0.23, 1, 0.320, 1) forwards;
+}
+
+/* ===== COMPONENT STYLES ===== */
+
+/* Product card hover effect */
+.product-card {
+  @apply transition-all duration-300 ease-out;
+}
+.product-card:hover {
+  @apply shadow-lg -translate-y-1;
+}
+
+/* Category circle hover */
+.category-circle {
+  @apply transition-all duration-300 ease-out;
+}
+.category-circle:hover {
+  @apply scale-110 border-[#0038FF];
+}
+
+/* Progress bar animation */
+.progress-bar-fill {
+  @apply transition-all duration-700 ease-out;
+}
+
+/* Button hover effects */
+button {
+  @apply transition-all duration-200 ease-out;
+}
+button:active {
+  @apply scale-95;
+}
+
+/* Link hover effects */
+a {
+  @apply transition-colors duration-200;
+}
+
+/* Elevated card shadow */
+.card-elevated {
+  @apply shadow-lg hover:shadow-xl transition-shadow duration-300;
+}
+
+/* Gradient text utility */
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r;
+}
+
+/* Focus ring style */
+*:focus {
+  @apply outline-none ring-2 ring-[#0038FF] ring-opacity-50;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  @apply ring-2 ring-[#0038FF] ring-opacity-50;
+}
+
+/* Smooth transitions for all interactive elements */
+input,
+select,
+textarea {
+  @apply transition-all duration-200;
+}
+
+/* Selection styling */
+::selection {
+  @apply bg-[#0038FF] text-white;
+}
+
+::-moz-selection {
+  @apply bg-[#0038FF] text-white;
+}
+
+/* Mobile responsiveness utilities */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+}
