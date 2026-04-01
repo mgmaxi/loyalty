@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, ChevronRight, AlertTriangle, Rocket, Target } from "lucide-react";
+import { X, ChevronRight, AlertTriangle, Rocket, Crown, Target } from "lucide-react";
 import { getEscenarioCPPG } from "@/lib/segmentation";
 
 /**
@@ -22,12 +22,12 @@ export function PopupNoAdherido({ onClose }) {
         </button>
 
         {/* Header with gradient */}
-        <div className="bg-gradient-to-r from-[#0038FF] via-[#4A8CFF] to-[#EC4899] p-6 md:p-8 text-center">
+        <div className="bg-gradient-to-r from-[#0038FF] via-[#4A8CFF] to-[#EC4899] p-8 text-center">
           <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 text-4xl animate-bounce">
             ⭐
           </div>
-          <h2 className="text-2xl md:text-3xl font-black text-white mb-2">
-            ¡Sumate al Programa de Fidelización!
+          <h2 className="text-3xl font-black text-white mb-2">
+            ¡Sumate al Programa Selecta!
           </h2>
           <p className="text-white/90 text-sm font-medium">
             Accedé a beneficios exclusivos
@@ -35,7 +35,7 @@ export function PopupNoAdherido({ onClose }) {
         </div>
 
         {/* Content */}
-        <div className="p-5 md:p-8">
+        <div className="p-8">
           {/* Benefits List with Icons */}
           <div className="space-y-3 mb-8">
             <div className="flex items-start gap-3 group hover:bg-blue-50 p-2 rounded-lg transition">
@@ -44,9 +44,9 @@ export function PopupNoAdherido({ onClose }) {
               </div>
               <div>
                 <p className="font-semibold text-gray-900 text-sm">
-                  18 cuotas sin interés en Tienda Macro
+                  Hasta 22 cuotas sin interés
                 </p>
-                <p className="text-xs text-gray-500">Y hasta más como Socio</p>
+                <p className="text-xs text-gray-500">En todos los productos</p>
               </div>
             </div>
 
@@ -56,9 +56,9 @@ export function PopupNoAdherido({ onClose }) {
               </div>
               <div>
                 <p className="font-semibold text-gray-900 text-sm">
-                  30% ahorro en Tienda Macro
+                  Hasta 15% descuento
                 </p>
-                <p className="text-xs text-gray-500">Desde Nivel 2 en adelante</p>
+                <p className="text-xs text-gray-500">En seleccionados según nivel</p>
               </div>
             </div>
 
@@ -80,9 +80,9 @@ export function PopupNoAdherido({ onClose }) {
               </div>
               <div>
                 <p className="font-semibold text-gray-900 text-sm">
-                  Productos y experiencias exclusivos
+                  Productos VIP exclusivos
                 </p>
-                <p className="text-xs text-gray-500">Solo para Socios</p>
+                <p className="text-xs text-gray-500">Solo para miembros premium</p>
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@ function BannerRiesgoBaja({ escenario, perfil, config }) {
       : `${perfil.insigniasFaltantes} insignias`;
 
   return (
-    <div className="w-full bg-gradient-to-r from-red-50 via-orange-50 to-red-50 border-l-4 border-red-500 rounded-xl p-4 md:p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
+    <div className="w-full bg-gradient-to-r from-red-50 via-orange-50 to-red-50 border-l-4 border-red-500 rounded-xl p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
       <div className="flex items-start gap-4">
         <div className="text-3xl flex-shrink-0">
           <AlertTriangle className="w-7 h-7 text-red-500" />
@@ -153,7 +153,7 @@ function BannerCercaAscenso({ escenario, perfil, config }) {
   const percentToNext = Math.round(progress);
 
   return (
-    <div className="w-full bg-gradient-to-r from-purple-50 via-purple-50 to-pink-50 border-l-4 border-purple-500 rounded-xl p-4 md:p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
+    <div className="w-full bg-gradient-to-r from-purple-50 via-purple-50 to-pink-50 border-l-4 border-purple-500 rounded-xl p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
       <div className="flex items-start gap-4">
         <div className="text-3xl flex-shrink-0">
           <Rocket className="w-7 h-7 text-purple-500" />
@@ -207,24 +207,27 @@ function BannerCercaAscenso({ escenario, perfil, config }) {
  */
 function BannerNivelMaximo({ escenario, config }) {
   return (
-    <div className="w-full bg-gradient-to-r from-[#F0F0FF] via-gray-50 to-[#F0F0FF] border-l-4 rounded-xl p-4 md:p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300" style={{ borderColor: "#1A1A2E" }}>
+    <div className="w-full bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 border-l-4 border-amber-500 rounded-xl p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
       <div className="flex items-start gap-4">
+        <div className="text-3xl flex-shrink-0">
+          <Crown className="w-7 h-7 text-amber-600" />
+        </div>
         <div className="flex-1">
           <h3 className="font-bold text-gray-900 text-lg mb-2">
-            👑 ¡Sos Socio!
+            👑 ¡Sos cliente Premium!
           </h3>
           <p className="text-gray-700 text-sm mb-4 leading-relaxed">
             Disfrutá de beneficios exclusivos y una experiencia sin comparación. Tu lealtad es nuestro valor más importante.
           </p>
           <div className="flex gap-2 flex-wrap">
-            <div className="text-white px-3 py-1 rounded-lg text-xs font-bold" style={{ backgroundColor: "#1A1A2E" }}>
-              ⭐ 18 cuotas sin interés
+            <div className="bg-amber-100 text-amber-700 px-3 py-1 rounded-lg text-xs font-bold">
+              ⭐ 22 cuotas sin interés
             </div>
-            <div className="text-white px-3 py-1 rounded-lg text-xs font-bold" style={{ backgroundColor: "#1A1A2E" }}>
-              ⭐ 30% ahorro Tienda Macro
+            <div className="bg-amber-100 text-amber-700 px-3 py-1 rounded-lg text-xs font-bold">
+              ⭐ 15% descuento
             </div>
-            <div className="text-white px-3 py-1 rounded-lg text-xs font-bold" style={{ backgroundColor: "#1A1A2E" }}>
-              ⭐ Atención Concierge
+            <div className="bg-amber-100 text-amber-700 px-3 py-1 rounded-lg text-xs font-bold">
+              ⭐ Envío gratis siempre
             </div>
           </div>
         </div>
@@ -238,7 +241,7 @@ function BannerNivelMaximo({ escenario, config }) {
  */
 function BannerTopeCPPG({ escenario }) {
   return (
-    <div className="w-full bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50 border-l-4 border-emerald-500 rounded-xl p-4 md:p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
+    <div className="w-full bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50 border-l-4 border-emerald-500 rounded-xl p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
       <div className="flex items-start gap-4">
         <div className="text-3xl flex-shrink-0">
           <Target className="w-7 h-7 text-emerald-600" />

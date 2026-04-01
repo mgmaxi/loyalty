@@ -41,7 +41,7 @@ export default function ProfileSwitcher({
     <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 z-50 mb-4">
       {/* Expanded List - Positioned above pill */}
       {isExpanded && (
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200 w-[calc(100vw-2rem)] max-w-sm md:w-96">
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200 w-96">
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
             {/* Header */}
             <div className="bg-gradient-to-r from-[#0038FF] to-[#4A8CFF] px-6 py-4">

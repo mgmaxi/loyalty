@@ -29,7 +29,7 @@ export default function ProductCarousel({
     <div className="w-full py-8 px-4">
       <div className="max-w-[1360px] mx-auto">
         {/* Title */}
-        <h2 className="text-[20px] md:text-[28px] font-black text-[#1A1A2E] mb-4 md:mb-6">
+        <h2 className="text-[28px] font-black text-[#1A1A2E] mb-6">
           {title}
         </h2>
 
@@ -44,7 +44,8 @@ export default function ProductCarousel({
             {productos.map((producto) => (
               <div
                 key={producto.id}
-                className="flex-shrink-0 w-[220px] sm:w-[260px] md:w-[280px]"
+                className="flex-shrink-0"
+                style={{ width: "280px" }}
               >
                 <ProductCard
                   producto={producto}
@@ -55,18 +56,18 @@ export default function ProductCarousel({
             ))}
           </div>
 
-          {/* Left Arrow Button — desktop only */}
+          {/* Left Arrow Button */}
           <button
             onClick={() => scroll("left")}
-            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white rounded-full shadow-lg p-2 hover:bg-gray-100 transition opacity-0 group-hover:opacity-100 z-10"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white rounded-full shadow-lg p-2 hover:bg-gray-100 transition opacity-0 group-hover:opacity-100 z-10"
           >
             <ChevronLeft className="w-6 h-6 text-[#0038FF]" />
           </button>
 
-          {/* Right Arrow Button — desktop only */}
+          {/* Right Arrow Button */}
           <button
             onClick={() => scroll("right")}
-            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white rounded-full shadow-lg p-2 hover:bg-gray-100 transition opacity-0 group-hover:opacity-100 z-10"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white rounded-full shadow-lg p-2 hover:bg-gray-100 transition opacity-0 group-hover:opacity-100 z-10"
           >
             <ChevronRight className="w-6 h-6 text-[#0038FF]" />
           </button>

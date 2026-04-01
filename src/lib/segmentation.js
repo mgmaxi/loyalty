@@ -2,13 +2,11 @@
  * Motor de Segmentación y Personalización - Programa de Lealtad 3.0
  *
  * Matriz: Nivel de Rentabilidad x Valor/Nivel del cliente
- * 2026: Solo Selecta (Renta Alta) segmentado en 4 niveles: Nivel 1, Nivel 2, Nivel 3, Socio
+ * 2026: Solo Selecta (Renta Alta) segmentado en 4 niveles
  *
  * Token: EnteMis | Apellido | Nombres | Puntos | Categoría | TipoPersona |
  *        NivelCalculado | *NivelReal* | InsigniasAcumuladas CPPG | InsigniasFaltantes CPPG
  */
-
-import { BENEFICIOS_RECOMPENSAS } from '@/data/config';
 
 /**
  * Determina el escenario CPPG activo para un perfil dado
@@ -44,7 +42,7 @@ export function getEscenarioCPPG(perfil, config) {
     return {
       tipo: "cerca_ascenso",
       objetivo: "Upselling",
-      mensaje: `¡Estás a solo ${perfil.insigniasFaltantes.toLocaleString("es-AR")} insignias de ser ${perfil.nivelReal === 3 ? "Socio" : config.niveles[perfil.nivelReal + 1]?.nombre}!`,
+      mensaje: `¡Estás a solo ${perfil.insigniasFaltantes.toLocaleString("es-AR")} insignias de ser ${config.niveles[perfil.nivelReal + 1]?.nombre}!`,
       color: "#8B5CF6",
     };
   }
@@ -57,8 +55,8 @@ export function getEscenarioCPPG(perfil, config) {
     return {
       tipo: "nivel_maximo",
       objetivo: "Reconocimiento",
-      mensaje: "¡Sos Socio! Disfrutá beneficios exclusivos: 18 cuotas sin interés, 30% ahorro en Tienda Macro y atención Concierge.",
-      color: "#1A1A2E",
+      mensaje: "¡Sos cliente Premium! Disfrutá beneficios exclusivos: 22 cuotas sin interés y envío gratis en todo.",
+      color: "#D97706",
     };
   }
 
@@ -82,13 +80,9 @@ export function getEscenarioCPPG(perfil, config) {
 }
 
 /**
- * Calcula precio personalizado según el nivel del cliente (modelo Tienda Macro)
- * Nivel 1: 12 cuotas s/interés, sin ahorro
- * Nivel 2: 12 cuotas s/interés + 30% ahorro (tope $50.000/mes)
- * Nivel 3: 12 cuotas s/interés + 30% ahorro (tope $100.000/mes)
- * Socio:   18 cuotas s/interés + 30% ahorro sin tope
+ * Calcula precio personalizado según el nivel del cliente
  */
-export function getPrecioPersonalizado(producto, perfil, _config) {
+export function getPrecioPersonalizado(producto, perfil, config) {
   if (!perfil.adherido || perfil.nivelReal === 0) {
     return {
       precio: producto.precio,
@@ -97,22 +91,16 @@ export function getPrecioPersonalizado(producto, perfil, _config) {
     };
   }
 
-  const nivelData = BENEFICIOS_RECOMPENSAS.beneficiosAhorros.items.tiendaMacro.niveles[perfil.nivelReal];
-  if (!nivelData) {
+  const nivel = config.niveles[perfil.nivelReal];
+  if (!nivel) {
     return { precio: producto.precio, cuotas: producto.cuotas, descuentoAplicado: 0 };
   }
 
-  const ahorroPorc = nivelData.ahorroPorc ?? 0;
-  const cuotasSI = nivelData.cuotasSinInteres ?? 12;
-  const precioFinal = ahorroPorc > 0
-    ? Math.round(producto.precio * (1 - ahorroPorc / 100))
-    : producto.precio;
-
+  const precioFinal = Math.round(producto.precio * (1 - nivel.tasaDescuento / 100));
   return {
     precio: precioFinal,
-    cuotas: Math.max(producto.cuotas, cuotasSI),
-    descuentoAplicado: ahorroPorc,
-    ahorroLabel: nivelData.ahorroLabel ?? null,
+    cuotas: Math.max(producto.cuotas, nivel.cuotasMax),
+    descuentoAplicado: nivel.tasaDescuento,
   };
 }
 

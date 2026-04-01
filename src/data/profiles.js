@@ -83,18 +83,4 @@ export const PERFILES_DEMO = [
     insigniasFaltantes: 0,
     adherido: true,
   },
-  {
-    id: 7,
-    enteMis: "00007",
-    apellido: "Suárez",
-    nombres: "Jorge",
-    puntosDisponibles: 2100000,
-    categoria: "Selecta",
-    tipoPersona: "Física",
-    nivelCalculado: 4,
-    nivelReal: 4,
-    insigniasAcumuladas: 42000,
-    insigniasFaltantes: 8000,
-    adherido: true,
-  },
 ];

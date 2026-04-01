@@ -20,7 +20,7 @@ export default function CarouselHero({ category }) {
 
   return (
     <div className="max-w-[1360px] mx-auto px-6 mb-8">
-      <div className="relative w-full h-36 sm:h-48 md:h-64 rounded-xl overflow-hidden">
+      <div className="relative w-full h-64 rounded-xl overflow-hidden">
         <Image
           src={hero.src}
           alt={hero.alt}

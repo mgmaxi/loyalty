@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
-import { DEFAULT_CONFIG, BENEFICIOS_RECOMPENSAS } from "@/data/config";
+import { DEFAULT_CONFIG } from "@/data/config";
 import { PERFILES_DEMO } from "@/data/profiles";
 import { getEscenarioCPPG } from "@/lib/segmentation";
 
@@ -27,10 +27,10 @@ const ESCENARIOS_CPPG = [
     accion: "Promoción de siguiente nivel",
   },
   {
-    escenario: "Nivel Máximo / Socio",
+    escenario: "Nivel Máximo",
     senalDatos: "nivelReal = 4",
     objetivo: "Reconocimiento",
-    accion: "Beneficios exclusivos Socio",
+    accion: "Beneficios exclusivos",
   },
   {
     escenario: "Tope CPPG",
@@ -153,9 +153,9 @@ export default function BackOfficePage() {
         <aside className="w-[260px] bg-white border-r border-gray-200 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto">
           <nav className="p-0">
             {[
-              { id: "niveles", label: "Niveles", emoji: "🏅" },
+              { id: "niveles", label: "Niveles Selecta", emoji: "🏅" },
               { id: "reglas", label: "Reglas CPPG", emoji: "⚙️" },
-              { id: "beneficios", label: "Recompensas", emoji: "🎁" },
+              { id: "beneficios", label: "Beneficios", emoji: "🎁" },
               { id: "simulador", label: "Simulador", emoji: "🔄" },
               { id: "escenarios", label: "Escenarios CPPG", emoji: "📊" },
             ].map((item) => (
@@ -190,7 +190,12 @@ export default function BackOfficePage() {
             />
           )}
           {tab === "beneficios" && (
-            <BeneficiosTab config={editConfig} />
+            <BeneficiosTab
+              config={editConfig}
+              onBeneficioChange={handleBeneficioChange}
+              onAddBeneficio={handleAddBeneficio}
+              onDeleteBeneficio={handleDeleteBeneficio}
+            />
           )}
           {tab === "simulador" && (
             <SimuladorTab
@@ -218,122 +223,103 @@ export default function BackOfficePage() {
 function NivelesTab({ config, onNivelChange }) {
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-2">Niveles</h2>
+      <h2 className="text-3xl font-bold mb-2">Niveles Selecta</h2>
       <p className="text-gray-600 mb-6">
-        Configura los niveles del programa de lealtad y sus parámetros visuales.
+        Configura los niveles del programa de lealtad y sus beneficios asociados.
       </p>
 
       <div className="grid gap-6">
         {[1, 2, 3, 4].map((nivelId) => {
           const nivel = config.niveles[nivelId];
-          const tmData = BENEFICIOS_RECOMPENSAS.beneficiosAhorros.items.tiendaMacro.niveles[nivelId];
           return (
             <div
               key={nivelId}
-              className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm"
+              className="bg-white rounded-lg p-6 border border-gray-200"
             >
-              {/* Header */}
-              <div className="flex items-center gap-3 mb-5 pb-4 border-b">
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-                  style={{ backgroundColor: nivel.colorBg }}
-                >
-                  {nivel.icon}
-                </div>
+              <div className="flex items-center gap-3 mb-4 pb-4 border-b">
+                <span className="text-3xl">{nivel.icon}</span>
                 <div>
-                  <h3 className="text-lg font-bold" style={{ color: nivel.color }}>{nivel.nombre}</h3>
-                  <span className="inline-block text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: nivel.colorBg, color: nivel.color }}>
+                  <h3 className="text-lg font-bold">{nivel.nombre}</h3>
+                  <span className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">
                     {nivel.label}
                   </span>
                 </div>
-                <div className="ml-auto flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full border-2 border-gray-200" style={{ backgroundColor: nivel.color }} />
-                  <span className="text-xs text-gray-400 font-mono">{nivel.color}</span>
-                </div>
               </div>
 
-              {/* Campos editables */}
-              <div className="grid grid-cols-3 gap-4 mb-5">
+              <div className="grid grid-cols-3 gap-4 mb-4">
                 <InputField
                   label="Nombre"
                   value={nivel.nombre}
-                  onChange={(e) => onNivelChange(nivelId, "nombre", e.target.value)}
+                  onChange={(e) =>
+                    onNivelChange(nivelId, "nombre", e.target.value)
+                  }
                 />
                 <InputField
                   label="Label"
                   value={nivel.label}
-                  onChange={(e) => onNivelChange(nivelId, "label", e.target.value)}
+                  onChange={(e) =>
+                    onNivelChange(nivelId, "label", e.target.value)
+                  }
                 />
                 <InputField
-                  label="Ícono (emoji)"
+                  label="Icon"
                   value={nivel.icon}
-                  onChange={(e) => onNivelChange(nivelId, "icon", e.target.value)}
+                  onChange={(e) =>
+                    onNivelChange(nivelId, "icon", e.target.value)
+                  }
                 />
                 <InputField
-                  label="Color principal"
-                  type="color"
-                  value={nivel.color}
-                  onChange={(e) => onNivelChange(nivelId, "color", e.target.value)}
-                />
-                <InputField
-                  label="Color fondo (hex)"
-                  value={nivel.colorBg}
-                  onChange={(e) => onNivelChange(nivelId, "colorBg", e.target.value)}
-                />
-                <InputField
-                  label="Cuotas Máx (Tienda Macro)"
+                  label="Cuotas Máx"
                   type="number"
                   value={nivel.cuotasMax}
-                  onChange={(e) => onNivelChange(nivelId, "cuotasMax", parseInt(e.target.value))}
+                  onChange={(e) =>
+                    onNivelChange(nivelId, "cuotasMax", parseInt(e.target.value))
+                  }
+                />
+                <InputField
+                  label="Tasa Descuento %"
+                  type="number"
+                  value={nivel.tasaDescuento}
+                  onChange={(e) =>
+                    onNivelChange(nivelId, "tasaDescuento", parseFloat(e.target.value))
+                  }
+                />
+                <InputField
+                  label="Color"
+                  type="color"
+                  value={nivel.color}
+                  onChange={(e) =>
+                    onNivelChange(nivelId, "color", e.target.value)
+                  }
                 />
               </div>
 
-              {/* Tienda Macro — solo lectura */}
-              {tmData && (
-                <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                  <p className="text-[11px] font-black uppercase tracking-widest text-blue-600 mb-3">
-                    🛒 Tienda Macro — Beneficio activo
-                  </p>
-                  <div className="grid grid-cols-4 gap-3">
-                    <div className="bg-white rounded-lg px-3 py-2 border border-blue-100 text-center">
-                      <p className="text-[10px] text-gray-400 font-medium mb-0.5">Cuotas s/interés</p>
-                      <p className="text-xl font-black text-[#0038FF]">{tmData.cuotasSinInteres}</p>
-                    </div>
-                    <div className="bg-white rounded-lg px-3 py-2 border border-blue-100 text-center">
-                      <p className="text-[10px] text-gray-400 font-medium mb-0.5">Ahorro %</p>
-                      <p className="text-xl font-black text-[#0038FF]">{tmData.ahorroPorc > 0 ? `${tmData.ahorroPorc}%` : "—"}</p>
-                    </div>
-                    <div className="bg-white rounded-lg px-3 py-2 border border-blue-100 text-center">
-                      <p className="text-[10px] text-gray-400 font-medium mb-0.5">Tope mensual</p>
-                      <p className="text-sm font-black text-gray-700">{tmData.tope ? `$${tmData.tope.toLocaleString("es-AR")}` : "Sin tope"}</p>
-                    </div>
-                    <div className="bg-white rounded-lg px-3 py-2 border border-blue-100 text-center">
-                      <p className="text-[10px] text-gray-400 font-medium mb-0.5">Label ahorro</p>
-                      <p className="text-[10px] font-bold text-gray-700 leading-tight">{tmData.ahorroLabel ?? "—"}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Checkboxes */}
-              <div className="flex gap-6 mt-4">
+              <div className="flex gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={nivel.beneficioEnvio}
-                    onChange={(e) => onNivelChange(nivelId, "beneficioEnvio", e.target.checked)}
-                    className="w-4 h-4 accent-[#0038FF]"
+                    onChange={(e) =>
+                      onNivelChange(nivelId, "beneficioEnvio", e.target.checked)
+                    }
+                    className="w-4 h-4"
                   />
-                  <span className="text-sm text-gray-700">Envío gratis</span>
+                  <span className="text-sm">Beneficio Envío</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={nivel.productosExclusivos}
-                    onChange={(e) => onNivelChange(nivelId, "productosExclusivos", e.target.checked)}
-                    className="w-4 h-4 accent-[#0038FF]"
+                    onChange={(e) =>
+                      onNivelChange(
+                        nivelId,
+                        "productosExclusivos",
+                        e.target.checked
+                      )
+                    }
+                    className="w-4 h-4"
                   />
-                  <span className="text-sm text-gray-700">Productos exclusivos</span>
+                  <span className="text-sm">Productos Exclusivos</span>
                 </label>
               </div>
             </div>
@@ -349,7 +335,7 @@ function ReglasTab({ config, onReglaChange }) {
     { key: "topeMensualNivel1", label: "Tope Mensual Nivel 1" },
     { key: "topeMensualNivel2", label: "Tope Mensual Nivel 2" },
     { key: "topeMensualNivel3", label: "Tope Mensual Nivel 3" },
-    { key: "topeMensualNivel4", label: "Tope Mensual Socio" },
+    { key: "topeMensualNivel4", label: "Tope Mensual Nivel 4" },
     { key: "umbralCercaAscenso", label: "Umbral Cerca Ascenso" },
     { key: "periodoGracia", label: "Período Gracia (días)" },
   ];
@@ -382,110 +368,61 @@ function ReglasTab({ config, onReglaChange }) {
   );
 }
 
-const PILAR_STYLES = {
-  beneficiosAhorros: { icon: "💰", bg: "bg-blue-50", border: "border-blue-200", text: "text-blue-700", header: "#1D4ED8" },
-  productos:         { icon: "📊", bg: "bg-violet-50", border: "border-violet-200", text: "text-violet-700", header: "#7C3AED" },
-  experiencias:      { icon: "🎭", bg: "bg-pink-50", border: "border-pink-200", text: "text-pink-700", header: "#BE185D" },
-  servicio:          { icon: "🎯", bg: "bg-emerald-50", border: "border-emerald-200", text: "text-emerald-700", header: "#065F46" },
-};
-
-function BeneficiosTab({ config }) {
+function BeneficiosTab({
+  config,
+  onBeneficioChange,
+  onAddBeneficio,
+  onDeleteBeneficio,
+}) {
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-2">Recompensas por Nivel</h2>
-      <p className="text-gray-600 mb-8">
-        Matriz completa de beneficios del programa organizada por los 4 pilares.
+      <h2 className="text-3xl font-bold mb-2">Beneficios por Nivel</h2>
+      <p className="text-gray-600 mb-6">
+        Administra los beneficios asociados a cada nivel.
       </p>
 
-      {/* Leyenda de niveles */}
-      <div className="flex gap-3 mb-8 flex-wrap">
-        {[1, 2, 3, 4].map((n) => {
-          const nivel = config.niveles[n];
-          return (
-            <div key={n} className="flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-semibold" style={{ borderColor: nivel.color, color: nivel.color, backgroundColor: nivel.colorBg }}>
-              <span>{nivel.icon}</span>
-              <span>{nivel.nombre}</span>
-            </div>
-          );
-        })}
-      </div>
+      <div className="grid gap-6">
+        {[1, 2, 3, 4].map((nivelId) => {
+          const nivel = config.niveles[nivelId];
+          const beneficios = config.beneficiosPorNivel[nivelId] || [];
 
-      <div className="space-y-8">
-        {Object.entries(BENEFICIOS_RECOMPENSAS).map(([pilarKey, pilar]) => {
-          const style = PILAR_STYLES[pilarKey];
           return (
-            <div key={pilarKey} className={`rounded-2xl border overflow-hidden shadow-sm ${style.border}`}>
-              {/* Pilar header */}
-              <div className="px-6 py-4 flex items-center gap-3" style={{ backgroundColor: style.header }}>
-                <span className="text-2xl">{style.icon}</span>
-                <h3 className="text-white font-black text-lg tracking-tight">{pilar.label}</h3>
+            <div
+              key={nivelId}
+              className="bg-white rounded-lg p-6 border border-gray-200"
+            >
+              <div className="flex items-center gap-2 mb-4 pb-4 border-b">
+                <span className="text-2xl">{nivel.icon}</span>
+                <h3 className="text-lg font-bold">{nivel.nombre}</h3>
               </div>
 
-              {/* Items table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm border-collapse">
-                  <thead>
-                    <tr className={style.bg}>
-                      <th className={`px-5 py-3 text-left text-xs font-black uppercase tracking-wider ${style.text} w-48 border-b ${style.border}`}>
-                        Beneficio
-                      </th>
-                      {[1, 2, 3, 4].map((n) => {
-                        const nivel = config.niveles[n];
-                        return (
-                          <th
-                            key={n}
-                            className={`px-4 py-3 text-center text-xs font-black uppercase tracking-wider border-b border-l ${style.border}`}
-                            style={{ color: nivel.color }}
-                          >
-                            {nivel.icon} {nivel.nombre}
-                          </th>
-                        );
-                      })}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.entries(pilar.items).map(([itemKey, item], idx) => (
-                      <tr key={itemKey} className={idx % 2 === 0 ? "bg-white" : style.bg + "/40"}>
-                        <td className={`px-5 py-4 font-bold text-gray-800 text-xs border-r ${style.border} align-top`}>
-                          {item.label}
-                        </td>
-                        {[1, 2, 3, 4].map((n) => {
-                          const nd = item.niveles[n];
-                          const isNA = !nd || nd.descripcion === "N/A" || nd.disponible === false;
-                          const nivel = config.niveles[n];
-                          return (
-                            <td
-                              key={n}
-                              className={`px-4 py-4 text-center text-[12px] border-l ${style.border} align-top`}
-                            >
-                              {isNA ? (
-                                <span className="text-gray-300 font-bold text-lg">—</span>
-                              ) : (
-                                <div>
-                                  <p className="font-medium text-gray-800 leading-snug">{nd.descripcion}</p>
-                                  {nd.tope && (
-                                    <span
-                                      className="inline-block mt-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full"
-                                      style={{ backgroundColor: nivel.colorBg, color: nivel.color }}
-                                    >
-                                      Tope ${nd.tope.toLocaleString("es-AR")}
-                                    </span>
-                                  )}
-                                  {nd.ahorroLabel && (
-                                    <p className="text-[10px] mt-1 font-semibold" style={{ color: nivel.color }}>
-                                      {nd.ahorroLabel}
-                                    </p>
-                                  )}
-                                </div>
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="space-y-3 mb-4">
+                {beneficios.map((beneficio, index) => (
+                  <div key={index} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={beneficio}
+                      onChange={(e) =>
+                        onBeneficioChange(nivelId, index, e.target.value)
+                      }
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0038FF]"
+                    />
+                    <button
+                      onClick={() => onDeleteBeneficio(nivelId, index)}
+                      className="text-red-500 hover:text-red-700 font-bold"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
               </div>
+
+              <button
+                onClick={() => onAddBeneficio(nivelId)}
+                className="w-full border-2 border-dashed border-gray-300 rounded py-2 text-gray-600 hover:text-gray-900 hover:border-gray-400 transition text-sm font-medium"
+              >
+                + Agregar beneficio
+              </button>
             </div>
           );
         })}
