@@ -55,7 +55,7 @@ export default function FeaturedProduct({ producto, perfil, config }) {
 	return (
 		<div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
 			{/* Top badge section */}
-			<div className="px-6 pt-4 pb-2 flex flex-wrap gap-2">
+			<div className="px-4 md:px-6 pt-3 md:pt-4 pb-2 flex flex-wrap gap-2">
 				<span className="inline-block px-4 py-1 border-2 border-[#EC4899] text-[#EC4899] font-bold text-[11px] rounded-full">
 					Producto destacado
 				</span>
@@ -70,9 +70,9 @@ export default function FeaturedProduct({ producto, perfil, config }) {
 			</div>
 
 			{/* Image and discount circle container */}
-			<div className="relative px-6 pt-2 pb-6 bg-gradient-to-b from-gray-50 to-white">
+			<div className="relative px-4 md:px-6 pt-2 pb-4 md:pb-6 bg-gradient-to-b from-gray-50 to-white">
 				{/* Image */}
-				<div className="relative bg-white rounded-lg flex items-center justify-center h-[280px] mb-2 border border-gray-100">
+				<div className="relative bg-white rounded-lg flex items-center justify-center h-[180px] sm:h-[220px] md:h-[280px] mb-2 border border-gray-100">
 					{producto.imagen ? (
 						<img
 							src={producto.imagen}
@@ -86,18 +86,18 @@ export default function FeaturedProduct({ producto, perfil, config }) {
 
 				{/* Discount circle */}
 				{ahorroTotal > 0 && (
-					<div className="absolute bottom-6 left-6 w-24 h-24 bg-gradient-to-br from-[#EC4899] to-[#C2185B] text-white rounded-full flex flex-col items-center justify-center font-bold shadow-xl border-4 border-white">
-						<span className="text-sm">Hasta</span>
-						<span className="text-4xl leading-none">{ahorroTotal}%</span>
-						<span className="text-[8px] leading-tight">De ahorro</span>
+					<div className="absolute bottom-4 md:bottom-6 left-4 md:left-6 w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-[#EC4899] to-[#C2185B] text-white rounded-full flex flex-col items-center justify-center font-bold shadow-xl border-2 md:border-4 border-white">
+						<span className="text-[9px] md:text-sm">Hasta</span>
+						<span className="text-2xl md:text-4xl leading-none">{ahorroTotal}%</span>
+						<span className="text-[7px] md:text-[8px] leading-tight">De ahorro</span>
 					</div>
 				)}
 			</div>
 
 			{/* Content section */}
-			<div className="px-6 pb-6 flex flex-col flex-1">
+			<div className="px-4 md:px-6 pb-4 md:pb-6 flex flex-col flex-1">
 				{/* Product name */}
-				<h3 className="text-[15px] font-bold text-[#0038FF] mb-3 line-clamp-2 leading-tight h-[40px]">
+				<h3 className="text-[13px] md:text-[15px] font-bold text-[#0038FF] mb-2 md:mb-3 line-clamp-2 leading-tight">
 					{producto.nombre}
 				</h3>
 
@@ -105,7 +105,7 @@ export default function FeaturedProduct({ producto, perfil, config }) {
 				<div className="mb-3">
 					<div className="flex items-baseline gap-2 mb-1">
 						<span className="text-sm text-gray-600">$</span>
-						<span className="text-4xl font-black text-[#EC4899]">
+						<span className="text-2xl md:text-4xl font-black text-[#EC4899]">
 							{formatPrecio(precio)}
 						</span>
 					</div>

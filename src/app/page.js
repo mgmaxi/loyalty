@@ -77,7 +77,7 @@ export default function TiendaPage() {
 
 			{/* CPPG: Inline banners */}
 			{escenario.tipo !== 'no_adherido' && escenario.tipo !== 'normal' && (
-				<div className="max-w-[1360px] mx-auto px-6 mt-6">
+				<div className="max-w-[1360px] mx-auto px-4 md:px-6 mt-4 md:mt-6">
 					<InlineBanner
 						escenario={escenario}
 						perfil={perfilActivo}
@@ -94,8 +94,8 @@ export default function TiendaPage() {
 					<HomeCarousel />
 
 					{/* Featured products */}
-					<div className="max-w-[1360px] mx-auto px-6 mb-12">
-						<div className="grid grid-cols-2 gap-6">
+					<div className="max-w-[1360px] mx-auto px-4 md:px-6 mb-8 md:mb-12">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
 							<FeaturedProduct
 								producto={PRODUCTOS[0]}
 								perfil={perfilActivo}
@@ -141,11 +141,11 @@ export default function TiendaPage() {
 						perfilActivo.nivelReal >= 3 &&
 						exclusivos.filter(p => esProductoVisible(p, perfilActivo)).length >
 							0 && (
-							<div className="max-w-[1360px] mx-auto px-6 mb-10">
-								<div className="bg-gradient-to-br from-[#1A1A2E] to-[#2D2D44] rounded-2xl p-8">
-									<div className="flex items-center gap-3 mb-6">
+							<div className="max-w-[1360px] mx-auto px-4 md:px-6 mb-10">
+								<div className="bg-gradient-to-br from-[#1A1A2E] to-[#2D2D44] rounded-2xl p-4 md:p-8">
+									<div className="flex items-center gap-3 mb-4 md:mb-6">
 										<Crown className="w-6 h-6 text-yellow-400" />
-										<h2 className="text-xl font-extrabold text-white">
+										<h2 className="text-lg md:text-xl font-extrabold text-white">
 											Productos Exclusivos{' '}
 											{config.niveles[perfilActivo.nivelReal]?.label}
 										</h2>
@@ -154,7 +154,7 @@ export default function TiendaPage() {
 										{exclusivos
 											.filter(p => esProductoVisible(p, perfilActivo))
 											.map(p => (
-												<div key={p.id} className="w-[260px] flex-shrink-0">
+												<div key={p.id} className="w-[220px] sm:w-[240px] md:w-[260px] flex-shrink-0">
 													<ProductCard
 														producto={p}
 														perfil={perfilActivo}

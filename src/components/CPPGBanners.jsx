@@ -22,11 +22,11 @@ export function PopupNoAdherido({ onClose }) {
         </button>
 
         {/* Header with gradient */}
-        <div className="bg-gradient-to-r from-[#0038FF] via-[#4A8CFF] to-[#EC4899] p-8 text-center">
+        <div className="bg-gradient-to-r from-[#0038FF] via-[#4A8CFF] to-[#EC4899] p-6 md:p-8 text-center">
           <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 text-4xl animate-bounce">
             ⭐
           </div>
-          <h2 className="text-3xl font-black text-white mb-2">
+          <h2 className="text-2xl md:text-3xl font-black text-white mb-2">
             ¡Sumate al Programa de Fidelización!
           </h2>
           <p className="text-white/90 text-sm font-medium">
@@ -35,7 +35,7 @@ export function PopupNoAdherido({ onClose }) {
         </div>
 
         {/* Content */}
-        <div className="p-8">
+        <div className="p-5 md:p-8">
           {/* Benefits List with Icons */}
           <div className="space-y-3 mb-8">
             <div className="flex items-start gap-3 group hover:bg-blue-50 p-2 rounded-lg transition">
@@ -116,7 +116,7 @@ function BannerRiesgoBaja({ escenario, perfil, config }) {
       : `${perfil.insigniasFaltantes} insignias`;
 
   return (
-    <div className="w-full bg-gradient-to-r from-red-50 via-orange-50 to-red-50 border-l-4 border-red-500 rounded-xl p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
+    <div className="w-full bg-gradient-to-r from-red-50 via-orange-50 to-red-50 border-l-4 border-red-500 rounded-xl p-4 md:p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
       <div className="flex items-start gap-4">
         <div className="text-3xl flex-shrink-0">
           <AlertTriangle className="w-7 h-7 text-red-500" />
@@ -153,7 +153,7 @@ function BannerCercaAscenso({ escenario, perfil, config }) {
   const percentToNext = Math.round(progress);
 
   return (
-    <div className="w-full bg-gradient-to-r from-purple-50 via-purple-50 to-pink-50 border-l-4 border-purple-500 rounded-xl p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
+    <div className="w-full bg-gradient-to-r from-purple-50 via-purple-50 to-pink-50 border-l-4 border-purple-500 rounded-xl p-4 md:p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
       <div className="flex items-start gap-4">
         <div className="text-3xl flex-shrink-0">
           <Rocket className="w-7 h-7 text-purple-500" />
@@ -207,7 +207,7 @@ function BannerCercaAscenso({ escenario, perfil, config }) {
  */
 function BannerNivelMaximo({ escenario, config }) {
   return (
-    <div className="w-full bg-gradient-to-r from-[#F0F0FF] via-gray-50 to-[#F0F0FF] border-l-4 rounded-xl p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300" style={{ borderColor: "#1A1A2E" }}>
+    <div className="w-full bg-gradient-to-r from-[#F0F0FF] via-gray-50 to-[#F0F0FF] border-l-4 rounded-xl p-4 md:p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300" style={{ borderColor: "#1A1A2E" }}>
       <div className="flex items-start gap-4">
         <div className="flex-1">
           <h3 className="font-bold text-gray-900 text-lg mb-2">
@@ -238,7 +238,7 @@ function BannerNivelMaximo({ escenario, config }) {
  */
 function BannerTopeCPPG({ escenario }) {
   return (
-    <div className="w-full bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50 border-l-4 border-emerald-500 rounded-xl p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
+    <div className="w-full bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50 border-l-4 border-emerald-500 rounded-xl p-4 md:p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
       <div className="flex items-start gap-4">
         <div className="text-3xl flex-shrink-0">
           <Target className="w-7 h-7 text-emerald-600" />
