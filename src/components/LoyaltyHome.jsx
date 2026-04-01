@@ -31,7 +31,7 @@ const NIVEL_IDENTITY = {
     motivacion: "Próximo paso: convertite en Socio y accedé a Concierge + YPF Full.",
   },
   4: {
-    headline: "Bienvenido, Socio",
+    headline: null, // dinámico: "Bienvenido, {nombre}"
     sub: "Formas parte de un grupo exclusivo. Tu relación con el Banco está en su nivel más alto.",
     motivacion: null,
   },
@@ -80,14 +80,16 @@ export default function LoyaltyHome({ perfil, config = DEFAULT_CONFIG }) {
 
   const enPeriodoGracia = perfil.nivelCalculado < perfil.nivelReal;
   const identity        = NIVEL_IDENTITY[perfil.nivelReal];
+  const headline        = identity?.headline ?? `Bienvenido, ${perfil.nombres}`;
   const destacado       = BENEFICIO_DESTACADO[perfil.nivelReal];
   const logrosActivos   = LOGROS.filter((l) => perfil.nivelReal >= l.desde);
   const logrosPendientes = LOGROS.filter((l) => perfil.nivelReal < l.desde);
 
-  // Animación de nivel: dispara al montar el componente
+  // Animación de nivel: re-dispara cada vez que cambia el nivel
   const [showLevelAnim, setShowLevelAnim] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setShowLevelAnim(true), 100);
+    setShowLevelAnim(false);
+    const t = setTimeout(() => setShowLevelAnim(true), 80);
     return () => clearTimeout(t);
   }, [perfil.nivelReal]);
 
@@ -99,15 +101,15 @@ export default function LoyaltyHome({ perfil, config = DEFAULT_CONFIG }) {
         <div className="mb-10 animate-slideUp">
           <div className="flex items-start gap-4">
             <div
-              className={`w-16 h-16 rounded-2xl flex items-center justify-center text-4xl shadow-lg flex-shrink-0
-                ${showLevelAnim ? "animate-levelUpBurst" : "opacity-0"}`}
-              style={{ backgroundColor: nivelActual?.colorBg, border: `2px solid ${nivelActual?.color}` }}
+              className={`w-16 h-16 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0 select-none
+                ${showLevelAnim ? (perfil.nivelReal === 4 ? "animate-bounce" : "animate-float") : "opacity-0"}`}
+              style={{ backgroundColor: nivelActual?.colorBg, animationDuration: perfil.nivelReal === 4 ? "2.5s" : "3.5s" }}
             >
               {nivelActual?.icon}
             </div>
             <div>
               <h1 className="text-4xl font-black text-gray-900 leading-tight">
-                {identity?.headline}
+                {headline}
               </h1>
               <p className="text-gray-500 text-sm font-medium mt-1 max-w-xl">
                 {identity?.sub}
@@ -146,8 +148,9 @@ export default function LoyaltyHome({ perfil, config = DEFAULT_CONFIG }) {
           >
             <div className="flex justify-center mb-4">
               <div
-                className={`w-20 h-20 rounded-full flex items-center justify-center text-5xl shadow-lg bg-white
-                  ${showLevelAnim ? "animate-levelUpBurst" : "opacity-0"}`}
+                className={`text-6xl select-none
+                  ${showLevelAnim ? (perfil.nivelReal === 4 ? "animate-bounce" : "animate-float") : "opacity-0"}`}
+                style={{ animationDuration: perfil.nivelReal === 4 ? "2.5s" : "3.5s" }}
               >
                 {nivelActual?.icon}
               </div>
@@ -332,16 +335,21 @@ export default function LoyaltyHome({ perfil, config = DEFAULT_CONFIG }) {
         {/* ── FILA 3: Tabla comparativa ────────────────────────────────── */}
         <div className="mb-8 animate-slideUp animate-stagger-5">
           <div className="flex items-center gap-3 mb-6">
-            <TrendingUp className="w-6 h-6 text-[#0038FF]" />
-            <h2 className="text-3xl font-black text-gray-900">Descubrí tus recompensas</h2>
+            <div className="w-10 h-10 bg-[#0038FF]/10 rounded-xl flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-[#0038FF]" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black text-gray-900">Descubrí tus recompensas</h2>
+              <p className="text-xs text-gray-400 font-medium">Tu nivel actual está resaltado</p>
+            </div>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-lg">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-xl">
+            <table className="w-full text-sm border-collapse">
               <thead>
                 <tr>
-                  <th className="bg-gray-50 px-4 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider w-52">
-                    Beneficio
+                  <th className="px-5 py-5 text-left text-xs font-black uppercase tracking-wider w-52 sticky left-0 z-10" style={{ backgroundColor: "#CCBB8D", color: "#6B5A2E" }}>
+                    Recompensas
                   </th>
                   {[1, 2, 3, 4].map((n) => {
                     const nivel = config.niveles[n];
@@ -349,17 +357,23 @@ export default function LoyaltyHome({ perfil, config = DEFAULT_CONFIG }) {
                     return (
                       <th
                         key={n}
-                        className="px-4 py-4 text-center text-xs font-black uppercase tracking-wider"
-                        style={{ backgroundColor: isCurrent ? nivel.color : "#1A1A2E", color: "#fff" }}
+                        className="px-4 py-5 text-center text-xs font-black uppercase tracking-wider min-w-[140px]"
+                        style={{
+                          backgroundColor: isCurrent ? nivel.color : "#CCBB8D",
+                          color: isCurrent ? "#fff" : "#5C4A1E",
+                          boxShadow: isCurrent ? `inset 0 -3px 0 rgba(255,255,255,0.3)` : "none",
+                        }}
                       >
-                        <div className="flex flex-col items-center gap-1">
-                          {isCurrent && (
-                            <span className="bg-white/30 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">
-                              TU NIVEL
+                        <div className="flex flex-col items-center gap-1.5">
+                          <span className="text-2xl">{nivel.icon}</span>
+                          <span className="text-sm font-black">{nivel.nombre}</span>
+                          {isCurrent ? (
+                            <span className="bg-white text-[10px] px-2.5 py-0.5 rounded-full font-black" style={{ color: nivel.color }}>
+                              ✦ TU NIVEL
                             </span>
+                          ) : (
+                            <span className="text-[10px] opacity-40">·</span>
                           )}
-                          <span>{nivel.icon}</span>
-                          <span>{nivel.nombre}</span>
                         </div>
                       </th>
                     );
@@ -367,47 +381,64 @@ export default function LoyaltyHome({ perfil, config = DEFAULT_CONFIG }) {
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(BENEFICIOS_RECOMPENSAS).map(([pilarKey, pilar]) => (
+                {Object.entries(BENEFICIOS_RECOMPENSAS).map(([pilarKey, pilar], pilarIdx) => (
                   <>
+                    {/* Pilar header row */}
                     <tr key={`pilar-${pilarKey}`}>
                       <td
                         colSpan={5}
-                        className="px-4 py-2 text-xs font-black uppercase tracking-wider text-white"
-                        style={{ backgroundColor: "#0038FF" }}
+                        className="px-5 py-2.5 text-[11px] font-black uppercase tracking-widest"
+                        style={{ backgroundColor: pilarIdx % 2 === 0 ? "#EFF6FF" : "#F5F3FF", color: pilarIdx % 2 === 0 ? "#1D4ED8" : "#7C3AED" }}
                       >
-                        {PILAR_ICONS[pilarKey]} {pilar.label}
+                        <span className="mr-2">{PILAR_ICONS[pilarKey]}</span>{pilar.label}
                       </td>
                     </tr>
                     {Object.entries(pilar.items).map(([itemKey, item], itemIdx) => (
-                      <tr key={`${pilarKey}-${itemKey}`} className={itemIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                        <td className="px-4 py-3 font-bold text-gray-800 text-xs border-r border-gray-100">
+                      <tr
+                        key={`${pilarKey}-${itemKey}`}
+                        className="group border-b border-gray-100 last:border-0 hover:bg-blue-50/40 transition-colors duration-150"
+                      >
+                        <td className="px-5 py-3.5 font-bold text-gray-800 text-xs border-r border-gray-100 bg-white group-hover:bg-blue-50/40 sticky left-0 z-10">
                           {item.label}
                           {item.sublabel && (
-                            <span className="block text-gray-400 font-normal text-[10px]">{item.sublabel}</span>
+                            <span className="block text-gray-400 font-normal text-[10px] mt-0.5">{item.sublabel}</span>
                           )}
                         </td>
                         {[1, 2, 3, 4].map((n) => {
                           const nd = item.niveles[n];
                           const isCurrent = perfil.nivelReal === n;
                           const isNA = !nd || nd.descripcion === "N/A" || nd.disponible === false;
+                          const nivelColor = config.niveles[n]?.color;
                           return (
                             <td
                               key={n}
-                              className={`px-3 py-3 text-center text-[11px] leading-tight border-r border-gray-100 ${
-                                isCurrent ? "bg-blue-50 font-semibold text-blue-900" : "text-gray-600"
+                              className={`px-4 py-3.5 text-center text-[11px] leading-tight border-r border-gray-100 ${
+                                isCurrent
+                                  ? "font-semibold"
+                                  : "text-gray-500"
                               }`}
+                              style={isCurrent ? { backgroundColor: `${nivelColor}12` } : {}}
                             >
                               {isNA ? (
-                                <span className="text-gray-300 font-bold">—</span>
+                                <span className="text-gray-200 font-bold text-base">—</span>
                               ) : (
-                                <>
-                                  <span>{nd.descripcion}</span>
+                                <div className="flex flex-col items-center gap-1">
+                                  {isCurrent && (
+                                    <span className="text-base" style={{ color: nivelColor }}>✓</span>
+                                  )}
+                                  <span className={isCurrent ? "text-gray-800" : ""}>{nd.descripcion}</span>
                                   {nd.tope && (
-                                    <span className="block text-[10px] text-[#0038FF] font-bold mt-0.5">
+                                    <span
+                                      className="text-[10px] font-bold px-2 py-0.5 rounded-full mt-0.5"
+                                      style={isCurrent
+                                        ? { backgroundColor: `${nivelColor}20`, color: nivelColor }
+                                        : { color: "#6B7280" }
+                                      }
+                                    >
                                       Tope ${nd.tope.toLocaleString("es-AR")}
                                     </span>
                                   )}
-                                </>
+                                </div>
                               )}
                             </td>
                           );
@@ -419,7 +450,6 @@ export default function LoyaltyHome({ perfil, config = DEFAULT_CONFIG }) {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-gray-400 mt-3 text-right">(CUADRO NO EXHAUSTIVO)</p>
         </div>
 
       </div>

@@ -4,7 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Tienda Macro** is a Next.js 14 loyalty program e-commerce platform implementing a sophisticated **Segmentation & Personalization Engine** (CPPG - Programa de Lealtad 3.0) for Selecta customers. The app dynamically personalizes pricing, product visibility, and messaging based on customer level and engagement metrics.
+**Tienda Macro** is a Next.js 14 loyalty program e-commerce platform implementing a sophisticated **Segmentation & Personalization Engine** (CPPG - Programa de Fidelización) for Selecta customers. The app dynamically personalizes pricing, product visibility, and messaging based on customer level and engagement metrics.
+
+### Project Purpose
+The platform is a **Plataforma Integral de Fidelización** designed to:
+- Incrementar el engagement y la interacción de los clientes con el Banco
+- Reforzar el vínculo emocional — que los clientes se sientan valorados y recompensados
+- Impulsar la adopción y uso de productos y servicios financieros
+- Categorizar clientes por niveles basados en su grado de relacionamiento con el Banco
+- Ofrecer beneficios y experiencias personalizadas, relevantes y oportunas
+- Incorporar gamificación que incentive la participación activa
+- Fomentar sentido de comunidad y pertenencia dentro del ecosistema
 
 ### Stack
 
@@ -43,21 +53,48 @@ The app implements a **5-scenario CPPG matrix** that determines customer experie
 1. **No Adherido** - Unadhered customer: Adhesion modal popup
 2. **Riesgo de Baja** - Risk of downgrade: Red warning banner (Calculado < Real)
 3. **Cerca del Ascenso** - Near level-up: Purple incentive banner (Insignias faltantes ≤ threshold)
-4. **Nivel Máximo** - Premium high-engagement: Amber recognition banner
+4. **Nivel Máximo / Socio** - High-engagement top tier: Dark recognition banner
 5. **Tope CPPG** - Monthly badge cap reached: Green derivation banner
 
 Key functions:
 - `getEscenarioCPPG(perfil, config)` - Determines active scenario and messaging
-- `getPrecioPersonalizado(producto, perfil, config)` - Calculates level-based discounts (0%-15%)
+- `getPrecioPersonalizado(producto, perfil, _config)` - Calculates Tienda Macro discount + cuotas by level. Returns `{ precio, cuotas, descuentoAplicado, ahorroLabel }`. Reads from `BENEFICIOS_RECOMPENSAS.beneficiosAhorros.items.tiendaMacro.niveles[nivelReal]`
 - `esProductoVisible(producto, perfil)` - Controls product exclusivity by level
 
 **Token fields:** EnteMis | Apellido | Nombres | Puntos | Categoría | TipoPersona | NivelCalculado | **NivelReal** | InsigniasAcumuladas | InsigniasFaltantes
 
+### Level System (4 levels)
+
+| # | Nombre  | Color    | Cuotas TM | Ahorro TM | Tope TM    |
+|---|---------|----------|-----------|-----------|------------|
+| 1 | Nivel 1 | #94A3B8  | 12        | 0%        | —          |
+| 2 | Nivel 2 | #3B82F6  | 12        | 30% TC    | $500.000   |
+| 3 | Nivel 3 | #8B5CF6  | 12        | 30% TC+DB | $100.000   |
+| 4 | Socio   | #1A1A2E  | 18        | 30%       | sin tope   |
+
+> **Important:** Nivel 4 is called **"Socio"** — never "Premium" or "Nivel 4" in UI copy. The word "Selecta" should not appear in level labels or benefit copy (it's the program category, not the level name).
+
 ### Data Layer
 
-- **`src/data/config.js`** - DEFAULT_CONFIG with 4 level definitions (nivel.1-4), CPPG rules, and benefits per level
-- **`src/data/products.js`** - PRODUCTOS array with pricing, categories, cuota limits, and exclusivity flags
-- **`src/data/profiles.js`** - PERFILES_DEMO sample customers with adherencia status and point balances
+- **`src/data/config.js`** — `DEFAULT_CONFIG` (4 niveles, CPPG rules, beneficiosPorNivel legacy) + `BENEFICIOS_RECOMPENSAS` (4-pillar benefits matrix)
+- **`src/data/products.js`** — PRODUCTOS array with pricing, categories, cuota limits, and exclusivity flags
+- **`src/data/profiles.js`** — PERFILES_DEMO: 7 sample customers (nivelReal 0–4, adherido true/false). Profile id:7 is the "Socio" demo.
+
+### BENEFICIOS_RECOMPENSAS structure (`src/data/config.js`)
+
+Four pillars, each with items keyed by nivel 1–4:
+
+```js
+BENEFICIOS_RECOMPENSAS = {
+  beneficiosAhorros: { label, items: { gastronomia, supermercados, combustible, turismo, tiendaMacro } },
+  productos:         { label, items: { plazoFijo } },
+  experiencias:      { label, items: { tickets, gastronomiaEspectaculos } },
+  servicio:          { label, items: { atencion } },
+}
+// Each item has: { niveles: { 1: { descripcion, tope?, ahorroPorc?, cuotasSinInteres?, ahorroLabel? }, ... } }
+```
+
+`tiendaMacro.niveles[n].ahorroLabel` drives the copy shown in `ProductCard` below the cuotas line.
 
 ### Component Structure
 
@@ -66,13 +103,13 @@ Key functions:
 - `src/app/backoffice/page.js` - Admin panel with 5 tabs (Niveles, Reglas, Beneficios, Simulador, Escenarios)
 
 **Core Components:**
-- `Header` - Sticky header with profile info, level badge, points balance
+- `Header` - Sticky header. Level badge shows `nivelConfig?.nombre` (e.g. "Nivel 2", "Socio") — no "Selecta" suffix
 - `HeroBanner` - Dynamic hero with different copy for adhered vs. non-adhered
-- `FeaturedProduct` - Hero cards with discount badges and financing info
-- `ProductCard` - Grid item with price, cuotas, level discount badge
+- `FeaturedProduct` - Hero cards with discount badges. Badge reads from `ahorroLabel` (e.g. "30% ahorro Tienda Macro")
+- `ProductCard` - Grid item with price, cuotas, level discount badge + `ahorroLabel` line below cuotas
 - `ProductCarousel` - Horizontal scrollable product sections by category
-- `CPPGBanners` - Scenario-specific warning/incentive banners (PopupNoAdherido, InlineBanner)
-- `LoyaltyHome` - Level summary, badges progress, level comparison grid
+- `CPPGBanners` - Scenario-specific banners: `PopupNoAdherido` ("¡Sumate al Programa de Fidelización!"), `InlineBanner`
+- `LoyaltyHome` - Full loyalty landing with 5 sections (see below)
 - `CategoriesStrip`, `PromoBanners`, `BrandsStrip`, `Footer` - Static sections
 - `ProfileSwitcher` - Floating menu to switch between PERFILES_DEMO
 
@@ -90,15 +127,26 @@ Key functions:
 11. Brands strip
 12. Footer
 
+### LoyaltyHome sections (in order)
+
+1. **Hero header** — headline dinámico: `NIVEL_IDENTITY[nivelReal].headline` para niveles 1–3; para Socio (nivel 4) se genera como `"Bienvenido, {perfil.nombres}"`. Ícono sin borde ni fondo: `animate-bounce` (2.5s) para Socio, `animate-float` (3.5s) para el resto. La animación se re-dispara en cada cambio de perfil (reset a `false` → `true` en el `useEffect`).
+2. **Alerta período de gracia** — shown only when `nivelCalculado < nivelReal`
+3. **3-column grid:**
+   - *Card Nivel*: colored `colorBg`, ícono emoji sin círculo blanco — `animate-bounce` (Socio) o `animate-float` (resto), gradient bar
+   - *Card Insignias*: monthly progress bar + "Próximo nivel" block with `animate-ringPulse` and motivational copy from `NIVEL_IDENTITY[n].motivacion`
+   - *Beneficio destacado del mes*: `BENEFICIO_DESTACADO[nivelReal]` header + compact 4-pillar recompensas list
+4. **Logros** — 9 achievements grid. Unlocked = blue/purple gradient + `animate-unlockShine` sweep. Locked = gray + nivel requerido label.
+5. **Tabla comparativa** — full `BENEFICIOS_RECOMPENSAS` matrix. Header color `#CCBB8D` (dorado cálido) para columna "Recompensas" y niveles no activos (texto `#5C4A1E`); columna del nivel activo usa el color del nivel con texto blanco + badge "✦ TU NIVEL". Filas de pilar con fondo azul/violeta alternado. Hover sutil en filas. Primera columna sticky. No incluye nota "(CUADRO NO EXHAUSTIVO)".
+
 ### Styling System
 
-- **Tailwind + globals.css** - Custom keyframes for animations:
-  - **Core animations:** fadeIn, slideUp, slideDown, slideInFromLeft, slideInFromRight, pulse, bounce, shimmer, gradientShift
-  - **Experience animations:** progressFill (bar loading), glow (pulsing highlight), float (subtle movement), scalePulse (size pulsing), countUp (number entrance)
-- **Brand colors:** Primary #0038FF (blue), Secondary #EC4899 (pink), Gradient #4A8CFF, Dark #1A1A2E
-- **Responsive:** Mobile-first with grid-cols-2 MD+ for featured products, grid-cols-4 MD+ for level comparison
-- **Animations:** Cubic-bezier easing `cubic-bezier(0.23, 1, 0.320, 1)`, durations 200ms-700ms
-- **Stagger delays:** animate-stagger-1 through animate-stagger-4 for cascading entrance effects
+- **Tailwind + globals.css** — Custom keyframes:
+  - **Core:** fadeIn, slideUp, slideDown, slideInFromLeft, slideInFromRight, pulse, bounce, shimmer, gradientShift
+  - **Experience:** progressFill, glow, float, scalePulse, countUp
+  - **New (April 2026):** `levelUpBurst` (scale + radial ring on level change), `unlockShine` (sweep shimmer for achievements), `ringPulse` (soft ring for next-level progress)
+- **Brand colors:** Primary #0038FF (blue), Secondary #EC4899 (pink), Gradient #4A8CFF, Dark #1A1A2E (Socio)
+- **Responsive:** Mobile-first
+- **Stagger delays:** animate-stagger-1 through animate-stagger-6
 
 ## Key Patterns & Conventions
 
@@ -108,10 +156,10 @@ Key functions:
 - No external state library (Redux, Zustand)
 
 ### Data Flow
-1. Import DEFAULT_CONFIG, PRODUCTOS, PERFILES_DEMO
+1. Import `DEFAULT_CONFIG`, `BENEFICIOS_RECOMPENSAS`, `PRODUCTOS`, `PERFILES_DEMO`
 2. Maintain `perfilActivo` state (user context)
 3. Call `getEscenarioCPPG()` to determine banner/popup
-4. Pass perfil + config to components for dynamic rendering
+4. Pass `perfil + config` to components for dynamic rendering
 5. Filter products by `esProductoVisible()` and `exclusivoNivel` flag
 
 ### Formatting & Localization
@@ -121,12 +169,9 @@ Key functions:
 
 ### Component Props Pattern
 ```jsx
-// Typical consumer component signature
 function ProductCard({ producto, perfil, config }) {
-  const { precio, cuotas, descuentoAplicado } = getPrecioPersonalizado(
-    producto,
-    perfil,
-    config
+  const { precio, cuotas, descuentoAplicado, ahorroLabel } = getPrecioPersonalizado(
+    producto, perfil, config
   );
   // Render...
 }
@@ -134,81 +179,72 @@ function ProductCard({ producto, perfil, config }) {
 
 ### Naming Conventions
 - **Profile fields:** `perfil.nivelReal`, `perfil.nivelCalculado`, `perfil.adherido`, `perfil.insigniasAcumuladas`
-- **Config fields:** `config.niveles[1]`, `config.reglasCPPG.*`, `config.beneficiosPorNivel[2]`
+- **Config fields:** `config.niveles[1]`, `config.reglasCPPG.*`, `BENEFICIOS_RECOMPENSAS.beneficiosAhorros.items.tiendaMacro.niveles[n]`
 - **Product fields:** `producto.precio`, `producto.cuotas`, `producto.exclusivoNivel`, `producto.categoria`
 
-## Recent Updates (March 2026)
+### UI Copy Rules
+- Level 4 = **"Socio"** everywhere (navbar, cards, banners, copy)
+- No "Selecta" in level labels or benefit descriptions
+- Popup title = **"¡Sumate al Programa de Fidelización!"**
+- LoyaltyHome title = `NIVEL_IDENTITY[nivelReal].headline` (not a generic string)
 
-### UI/UX Improvements
-- **Image Asset Management** - All product image file names use hyphens instead of spaces for Vercel compatibility
-- **Product Names** - Normalized to use spaces (e.g., "Celular Samsung Galaxy S26" not "Celular-Samsung-Galaxy-S26")
-- **Featured Products Button** - Changed "Comprar" button color from pink (#EC4899) to blue (#0038FF) for consistency
-- **Price Formatting** - FeaturedProduct now displays prices with thousand separators (e.g., "$ 2.609.999")
-- **HeroBanner Spacing** - Added mb-12 margin to separate from following carousel
-- **Footer Layout** - Removed pb-24 padding to eliminate white space below footer; footer now extends to page edge
-- **Categories Strip** - Changed from horizontal scroll to centered flex-wrap with improved spacing (gap-8)
-- **Navbar Spacing** - Added mt-6 to CPPG banners for better separation from navbar
+## Recent Updates (April 2026)
 
-### Product & Badge System
-- **MacBook Featured Image** - Updated to use local `macbook.png` from Productos-Varios folder
-- **Exclusivity Badges** - Refactored to use dynamic icons and labels from config:
-  - 🥉 Exclusivo Inicial (Nivel 1)
-  - 🥈 Exclusivo Intermedio (Nivel 2)
-  - 🥇 Exclusivo Avanzado (Nivel 3)
-  - 👑 Exclusivo Premium (Nivel 4)
-- **Badge Logic** - Only displays if user's level >= product's exclusivoNivel
+### Esquema de Recompensas — Redefinición completa
 
-### Animation Enhancements (LoyaltyHome - Programa Selecta)
-New animations significantly improve visual feedback and user experience:
-- **Header** - slideUp entrance with floating level icon
-- **Level Card** - Icon with pulsing glow effect
-- **Insignias Card** - Progress bar with progressFill animation, counter with countUp entrance
-- **Benefits Card** - Staggered slide-up entrance
-- **Level Comparison Grid** - Cascading entrance with dynamic delays, current level pulses continuously
-- **Overall Flow** - Natural, elegant progression communicating to users they're exploring personalized content
+**Niveles renombrados:**
+- Nivel 1 → "Nivel 1" (label: "Nivel 1")
+- Nivel 2 → "Nivel 2" (label: "Nivel 2")
+- Nivel 3 → "Nivel 3" (label: "Nivel 3")
+- Nivel 4 → **"Socio"** (color #1A1A2E, ya no "Premium")
 
-### File & Asset Structure
-- **Image Paths** - All product images use pattern: `/images/products/{categoria}/{Filename-With-Hyphens}.{ext}`
-- **Supported Categories** - Smart-Tv, Samsung-S26, Celulares, Xiaomi, Heladera, Productos-Varios
-- **Carousel Components** - HomeCarousel (5s auto-play), CarouselHero (category-specific images)
+**Nueva estructura de beneficios (`BENEFICIOS_RECOMPENSAS`):**
+4 pilares con matriz completa por nivel:
+- **Tus beneficios / ahorros**: Gastronomía, Supermercados, Combustible YPF, Turismo (Almundo), Tienda Macro
+- **Tus productos**: Plazo Fijo Tasa Preferencial (solo N3/Socio)
+- **Tus experiencias**: Tickets espectáculos, Gastronomía + Merchandising en espectáculos
+- **Tu servicio**: Atención (WhatsApp → Prioridad → Ejecutivo Asignado → Concierge)
+
+**Tienda Macro — lógica de precios actualizada:**
+- Todos los niveles: 12 cuotas sin interés base
+- Nivel 2+: 30% ahorro con Tarjeta de Crédito (Nivel 2), TC + Débito (Nivel 3), mejorado (Socio)
+- `ahorroLabel` por nivel en config → mostrado en `ProductCard` debajo de cuotas
+- Topes: N2 $500.000 / N3 $100.000 / Socio sin tope
+
+**LoyaltyHome — gamificación y mejoras UX:**
+- Copy de pertenencia por nivel (`NIVEL_IDENTITY`) con headline + motivación
+- Progreso hacia siguiente nivel con barra y copy motivacional
+- Sección de logros (9 achievements acumulativos, desbloqueados con shimmer)
+- Beneficio destacado del mes por nivel (`BENEFICIO_DESTACADO`)
+- Animación `levelUpBurst` al cambiar de perfil/nivel
+
+**Animaciones nuevas en `globals.css`:**
+- `animate-levelUpBurst` — scale + radial ring, para cambio de nivel
+- `animate-unlockShine` — sweep shimmer, para logros desbloqueados
+- `animate-ringPulse` — ring suave, para bloque de próximo nivel
+- `animate-stagger-5/6` — delays adicionales
 
 ## Important Implementation Notes
 
-1. **No Tests Setup** - Project currently has no Jest/Testing Library configuration. If adding tests, ensure setup in jest.config.js and __tests__/ directory.
+1. **No Tests Setup** - Project currently has no Jest/Testing Library configuration.
 
-2. **Static Data Only** - All data (products, profiles, config) is hardcoded. API route exists at `src/app/api/config/route.js` but not actively used for persistence.
+2. **Static Data Only** - All data (products, profiles, config) is hardcoded. API route exists at `src/app/api/config/route.js` but not actively used.
 
-3. **Exclusive Products Logic** - Products with `exclusivoNivel: 3` or `4` only appear in the Exclusive section if `perfil.nivelReal >= exclusivoNivel`.
+3. **Exclusive Products Logic** - Products with `exclusivoNivel: 3` or `4` only appear if `perfil.nivelReal >= exclusivoNivel`.
 
-4. **Cuotas (Installments)** - Limited by level:
-   - Nivel 1: 12 cuotas max
-   - Nivel 2: 15 cuotas max
-   - Nivel 3: 18 cuotas max
-   - Nivel 4: 22 cuotas max
+4. **Cuotas Tienda Macro** — All levels get 12 cuotas sin interés base. Socio gets 18. This comes from `BENEFICIOS_RECOMPENSAS.tiendaMacro.niveles[n].cuotasSinInteres`, NOT from `config.niveles[n].cuotasMax`.
 
-5. **Discounts** - Applied at checkout (hardcoded in `getPrecioPersonalizado()`, not cart logic):
-   - Nivel 1: 0%
-   - Nivel 2: 5%
-   - Nivel 3: 10%
-   - Nivel 4: 15%
+5. **Discounts** — `getPrecioPersonalizado` uses `ahorroPorc` from `BENEFICIOS_RECOMPENSAS` (0 for N1, 30 for N2/N3/Socio). The old `tasaDescuento` field in `config.niveles` is now 0 for all levels and should not be used for pricing.
 
-6. **Image Handling** - next.config.js allows Unsplash + internal CDN domains; set `unoptimized: true` (temporary, not production-ready). Local images in `/public/images/products/` with hyphens in filenames for Vercel compatibility.
+6. **Image Handling** - next.config.js allows Unsplash + internal CDN domains; `unoptimized: true` (temporary). Local images in `/public/images/products/` with hyphens in filenames.
 
 7. **Responsive Behavior** - Product grids collapse to single column on mobile; carousels scrollable on small screens.
 
-8. **Git Configuration** - .gitignore excludes documentation and Claude-specific files:
-   - CLAUDE.md, DESIGN_ITERATION_SUMMARY.md, FILES_MODIFIED.txt, NEXT_STEPS.md
-   - .claude/ directory for local settings
-   - Standard Node/Next.js patterns (node_modules/, .next/, .env files)
-
-## Related Documentation
-
-Refer to:
-- [DESIGN_ITERATION_SUMMARY.md](./DESIGN_ITERATION_SUMMARY.md) - Visual design refinements and component style details
-- [NEXT_STEPS.md](./NEXT_STEPS.md) - Roadmap for Phases 2-8 (images, search, cart, checkout, dashboard, etc.)
+8. **Git Configuration** - .gitignore excludes CLAUDE.md, .claude/, documentation files, and standard Node/Next.js patterns.
 
 ## Troubleshooting
 
 - **Module resolution errors:** Ensure `@/` import paths point to `src/` (configured in tsconfig or next.config)
 - **Missing dependencies:** Run `npm install` on local Windows machine; VM registry may be blocked
 - **Styling not applying:** Check `globals.css` is imported in root layout; Tailwind classes must be in JSX/template content
+- **`getPrecioPersonalizado` returning wrong discount:** Verify `BENEFICIOS_RECOMPENSAS` is imported in `segmentation.js` — it does NOT use `config.niveles[n].tasaDescuento`
