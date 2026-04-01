@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, ChevronRight, AlertTriangle, Rocket, Crown, Target } from "lucide-react";
+import { X, ChevronRight, AlertTriangle, Rocket, Target } from "lucide-react";
 import { getEscenarioCPPG } from "@/lib/segmentation";
 
 /**
@@ -27,7 +27,7 @@ export function PopupNoAdherido({ onClose }) {
             ⭐
           </div>
           <h2 className="text-3xl font-black text-white mb-2">
-            ¡Sumate al Programa Selecta!
+            ¡Sumate al Programa de Fidelización!
           </h2>
           <p className="text-white/90 text-sm font-medium">
             Accedé a beneficios exclusivos
@@ -44,9 +44,9 @@ export function PopupNoAdherido({ onClose }) {
               </div>
               <div>
                 <p className="font-semibold text-gray-900 text-sm">
-                  Hasta 22 cuotas sin interés
+                  18 cuotas sin interés en Tienda Macro
                 </p>
-                <p className="text-xs text-gray-500">En todos los productos</p>
+                <p className="text-xs text-gray-500">Y hasta más como Socio</p>
               </div>
             </div>
 
@@ -56,9 +56,9 @@ export function PopupNoAdherido({ onClose }) {
               </div>
               <div>
                 <p className="font-semibold text-gray-900 text-sm">
-                  Hasta 15% descuento
+                  30% ahorro en Tienda Macro
                 </p>
-                <p className="text-xs text-gray-500">En seleccionados según nivel</p>
+                <p className="text-xs text-gray-500">Desde Nivel 2 en adelante</p>
               </div>
             </div>
 
@@ -80,9 +80,9 @@ export function PopupNoAdherido({ onClose }) {
               </div>
               <div>
                 <p className="font-semibold text-gray-900 text-sm">
-                  Productos VIP exclusivos
+                  Productos y experiencias exclusivos
                 </p>
-                <p className="text-xs text-gray-500">Solo para miembros premium</p>
+                <p className="text-xs text-gray-500">Solo para Socios</p>
               </div>
             </div>
           </div>
@@ -207,27 +207,24 @@ function BannerCercaAscenso({ escenario, perfil, config }) {
  */
 function BannerNivelMaximo({ escenario, config }) {
   return (
-    <div className="w-full bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 border-l-4 border-amber-500 rounded-xl p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300">
+    <div className="w-full bg-gradient-to-r from-[#F0F0FF] via-gray-50 to-[#F0F0FF] border-l-4 rounded-xl p-6 mb-6 shadow-md animate-in slide-in-from-top duration-300" style={{ borderColor: "#1A1A2E" }}>
       <div className="flex items-start gap-4">
-        <div className="text-3xl flex-shrink-0">
-          <Crown className="w-7 h-7 text-amber-600" />
-        </div>
         <div className="flex-1">
           <h3 className="font-bold text-gray-900 text-lg mb-2">
-            👑 ¡Sos cliente Premium!
+            👑 ¡Sos Socio!
           </h3>
           <p className="text-gray-700 text-sm mb-4 leading-relaxed">
             Disfrutá de beneficios exclusivos y una experiencia sin comparación. Tu lealtad es nuestro valor más importante.
           </p>
           <div className="flex gap-2 flex-wrap">
-            <div className="bg-amber-100 text-amber-700 px-3 py-1 rounded-lg text-xs font-bold">
-              ⭐ 22 cuotas sin interés
+            <div className="text-white px-3 py-1 rounded-lg text-xs font-bold" style={{ backgroundColor: "#1A1A2E" }}>
+              ⭐ 18 cuotas sin interés
             </div>
-            <div className="bg-amber-100 text-amber-700 px-3 py-1 rounded-lg text-xs font-bold">
-              ⭐ 15% descuento
+            <div className="text-white px-3 py-1 rounded-lg text-xs font-bold" style={{ backgroundColor: "#1A1A2E" }}>
+              ⭐ 30% ahorro Tienda Macro
             </div>
-            <div className="bg-amber-100 text-amber-700 px-3 py-1 rounded-lg text-xs font-bold">
-              ⭐ Envío gratis siempre
+            <div className="text-white px-3 py-1 rounded-lg text-xs font-bold" style={{ backgroundColor: "#1A1A2E" }}>
+              ⭐ Atención Concierge
             </div>
           </div>
         </div>

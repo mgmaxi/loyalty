@@ -279,6 +279,55 @@ body {
   animation: countUp 0.6s cubic-bezier(0.23, 1, 0.320, 1) forwards;
 }
 
+/* Level-up celebration: soft radial burst + scale-in */
+@keyframes levelUpBurst {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+    box-shadow: 0 0 0 0 rgba(0, 56, 255, 0.5);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.08);
+    box-shadow: 0 0 0 24px rgba(0, 56, 255, 0);
+  }
+  70% {
+    transform: scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 56, 255, 0);
+  }
+}
+.animate-levelUpBurst {
+  animation: levelUpBurst 0.9s cubic-bezier(0.23, 1, 0.320, 1) forwards;
+}
+
+/* Unlock shimmer: sweeping shine for achievement badges */
+@keyframes unlockShine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.animate-unlockShine {
+  background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.6) 50%, transparent 70%);
+  background-size: 200% auto;
+  animation: unlockShine 1.6s ease-in-out infinite;
+}
+
+/* Subtle ring pulse for "próximo nivel" progress */
+@keyframes ringPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(139, 92, 246, 0); }
+}
+.animate-ringPulse {
+  animation: ringPulse 2.4s ease-in-out infinite;
+}
+
+/* Stagger extras */
+.animate-stagger-5 { animation-delay: 0.5s; }
+.animate-stagger-6 { animation-delay: 0.6s; }
+
 /* ===== COMPONENT STYLES ===== */
 
 /* Product card hover effect */

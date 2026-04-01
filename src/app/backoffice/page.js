@@ -27,10 +27,10 @@ const ESCENARIOS_CPPG = [
     accion: "Promoción de siguiente nivel",
   },
   {
-    escenario: "Nivel Máximo",
+    escenario: "Nivel Máximo / Socio",
     senalDatos: "nivelReal = 4",
     objetivo: "Reconocimiento",
-    accion: "Beneficios exclusivos",
+    accion: "Beneficios exclusivos Socio",
   },
   {
     escenario: "Tope CPPG",

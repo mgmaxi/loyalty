@@ -40,7 +40,7 @@ export default function FeaturedProduct({ producto, perfil, config }) {
 
 		if (descuentoAplicado > 0) {
 			badges.push({
-				label: `+${descuentoAplicado}% por nivel`,
+				label: `${descuentoAplicado}% ahorro Tienda Macro`,
 				color: 'bg-green-100 text-green-800',
 			});
 		}

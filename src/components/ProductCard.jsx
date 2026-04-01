@@ -8,10 +8,9 @@ export default function ProductCard({ producto, perfil, config }) {
     return null;
   }
 
-  const { precio, cuotas, descuentoAplicado } = getPrecioPersonalizado(producto, perfil, config);
+  const { precio, cuotas, descuentoAplicado, ahorroLabel } = getPrecioPersonalizado(producto, perfil, config);
 
   // Calculate display values
-  const precioBase = producto.precio;
   const precioOriginal = producto.precioOriginal || producto.precio;
   const tieneDescuentoProducto = producto.descuento > 0;
   const tieneDescuentoNivel = descuentoAplicado > 0;
@@ -55,7 +54,7 @@ export default function ProductCard({ producto, perfil, config }) {
               style={{ backgroundColor: nivelConfig?.color || "#3B82F6" }}
             >
               <Star className="w-3 h-3" />
-              {descuentoAplicado}% Nivel
+              {descuentoAplicado}% ahorro
             </span>
           )}
         </div>
@@ -110,6 +109,11 @@ export default function ProductCard({ producto, perfil, config }) {
           cuotas sin interés de{" "}
           <span className="font-semibold">${formatPrecio(cuotaValor)}</span>
         </p>
+        {tieneDescuentoNivel && ahorroLabel && (
+          <p className="text-[11px] text-[#0038FF] font-semibold mb-1">
+            + {ahorroLabel}
+          </p>
+        )}
 
         {/* Tax notice */}
         <p className="text-[10px] text-gray-400 mb-4">

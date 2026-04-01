@@ -95,7 +95,7 @@ export default function Header({ perfil, config, currentView, setCurrentView }) 
               className="ml-auto flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white px-4 py-1.5 rounded-lg font-semibold text-[12px] transition-all flex-shrink-0"
             >
               <span>{nivelConfig?.icon}</span>
-              Nivel {perfil.nivelReal} Selecta
+              {nivelConfig?.nombre}
             </button>
           )}
         </div>
